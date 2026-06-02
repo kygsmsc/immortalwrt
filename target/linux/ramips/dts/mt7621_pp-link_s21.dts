@@ -14,7 +14,6 @@
 		led-upgrade = &led_status;
 	};
 
-	// 复位键 GPIO18（官方标准配置）
 	keys {
 		compatible = "gpio-keys";
 
@@ -67,7 +66,6 @@
 				read-only;
 			};
 
-			// 16MB 固件分区
 			partition@50000 {
 				compatible = "denx,uimage";
 				label = "firmware";
@@ -81,7 +79,6 @@
 	status = "okay";
 };
 
-// 2.4G WiFi (MT7905)
 &pcie0 {
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
@@ -91,7 +88,6 @@
 	};
 };
 
-// 5G WiFi (MT7975)
 &pcie1 {
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
@@ -105,7 +101,6 @@
 	status = "okay";
 };
 
-// 4口：1 WAN + 3 LAN
 &switch0 {
 	ports {
 		port@1 {
@@ -130,9 +125,11 @@
 	};
 };
 
-&state_default {
-	gpio {
-		groups = "i2c", "uart3", "wdt";
-		function = "gpio";
+&pin_ctrl {
+	state_default: pinctrl0 {
+		gpio {
+			groups = "i2c", "uart3", "wdt";
+			function = "gpio";
+		};
 	};
 };
