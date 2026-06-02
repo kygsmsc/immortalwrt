@@ -2694,6 +2694,16 @@ define Device/plasmacloud_pax1800-lite
 endef
 TARGET_DEVICES += plasmacloud_pax1800-lite
 
+define Device/pp-link_s21
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 16128k
+  DEVICE_VENDOR := PP-LINK
+  DEVICE_MODEL := S21
+  DEVICE_PACKAGES := kmod-mt7915e wpad-openssl
+endef
+TARGET_DEVICES += pp-link_s21
+
 define Device/raisecom_msg1500-x-00
   $(Device/nand)
   $(Device/uimage-lzma-loader)
