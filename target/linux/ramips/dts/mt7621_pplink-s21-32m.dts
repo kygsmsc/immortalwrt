@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-
 #include "mt7621.dtsi"
 
 #include <dt-bindings/gpio/gpio.h>
@@ -8,7 +7,7 @@
 
 / {
 	compatible = "pplink,s21-32m", "mediatek,mt7621-soc";
-	model = "PP-LINK S21 (32M)";
+	model = "PP-LINK S21 (32M SPI NOR)";
 
 	aliases {
 		led-boot = &led_status;
@@ -24,17 +23,16 @@
 
 	keys {
 		compatible = "gpio-keys";
-
 		reset {
 			label = "reset";
 			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
 		};
 	};
 
 	leds {
 		compatible = "gpio-leds";
-
 		led_status: status {
 			function = LED_FUNCTION_STATUS;
 			color = <LED_COLOR_ID_GREEN>;
@@ -53,7 +51,6 @@
 
 &spi0 {
 	status = "okay";
-
 	flash@0 {
 		compatible = "jedec,spi-nor";
 		reg = <0>;
@@ -70,23 +67,21 @@
 				reg = <0x000000 0x30000>;
 				read-only;
 			};
-
 			partition@30000 {
 				label = "u-boot-env";
 				reg = <0x30000 0x10000>;
 				read-only;
 			};
-
 			factory: partition@40000 {
 				label = "factory";
 				reg = <0x40000 0x10000>;
 				read-only;
 			};
-
+			/*32M=0x2000000，固件分区 0x50000 ~ 末尾：0x1FB0000*/
 			partition@50000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-				reg = <0x50000 0x1fb0000>;
+				reg = <0x50000 0x1FB0000>;
 			};
 		};
 	};
@@ -98,19 +93,16 @@
 
 &pcie0 {
 	wifi@0,0 {
-		compatible = "mediatek,mt76";
+		compatible = "mediatek,mt7915e";
 		reg = <0x0000 0 0 0 0>;
 		mediatek,mtd-eeprom = <&factory 0x0000>;
-		ieee80211-freq-limit = <2400000 2500000>;
 	};
 };
-
 &pcie1 {
 	wifi@0,0 {
-		compatible = "mediatek,mt76";
+		compatible = "mediatek,mt7915e";
 		reg = <0x0000 0 0 0 0>;
 		mediatek,mtd-eeprom = <&factory 0x8000>;
-		ieee80211-freq-limit = <5000000 6000000>;
 	};
 };
 
@@ -120,22 +112,10 @@
 
 &switch0 {
 	ports {
-		port@1 {
-			status = "okay";
-			label = "lan3";
-		};
-		port@2 {
-			status = "okay";
-			label = "lan2";
-		};
-		port@3 {
-			status = "okay";
-			label = "lan1";
-		};
-		port@4 {
-			status = "okay";
-			label = "wan";
-		};
+		port@1 { status = "okay"; label = "lan3"; };
+		port@2 { status = "okay"; label = "lan2"; };
+		port@3 { status = "okay"; label = "lan1"; };
+		port@4 { status = "okay"; label = "wan"; };
 	};
 };
 
