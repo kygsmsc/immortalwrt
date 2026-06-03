@@ -23,7 +23,8 @@ ramips_setup_interfaces()
 	haier,har-20s2u1|\
 	hiwifi,hc5962|\
 	jdcloud,re-cp-02|\
-	pp-link,s21|\
+	pplink,s21-32m|\
+	pplink,s21-16m|\
 	mercusys,mr70x-v1|\
 	netgear,wax202|\
 	sim,simax1800t|\
