@@ -2728,7 +2728,6 @@ define Device/pplink_s21_32m
 endef
 TARGET_DEVICES += pplink_s21_32m
 
-
 define Device/raisecom_msg1500-x-00
   $(Device/nand)
   $(Device/uimage-lzma-loader)
