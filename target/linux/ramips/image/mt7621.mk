@@ -2702,7 +2702,7 @@ define Device/pplink_s21_16m
   DEVICE_VENDOR := PP-LINK
   DEVICE_MODEL := S21
   DEVICE_VARIANT := 16M
-  DEVICE_DTS := mt7621_pplink_s21_16m
+  DEVICE_DTS := mt7621_pplink_s21-16m
   DEVICE_PACKAGES += \
 	kmod-mt7915e \
 	mt7915-firmware \
@@ -2719,7 +2719,7 @@ define Device/pplink_s21_32m
   DEVICE_VENDOR := PP-LINK
   DEVICE_MODEL := S21
   DEVICE_VARIANT := 32M
-  DEVICE_DTS := mt7621_pplink_s21_32m
+  DEVICE_DTS := mt7621_pplink_s21-32m
   DEVICE_PACKAGES += \
 	kmod-mt7915e \
 	mt7915-firmware \
