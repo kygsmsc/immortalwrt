@@ -270,7 +270,7 @@
 	};
 };
 
-&pin_ctrl {
+&pinctrl {
 	state_default: pinctrl0 {
 		gpio {
 			groups = "wdt", "rgmii2";
