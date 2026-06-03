@@ -2695,20 +2695,39 @@ endef
 TARGET_DEVICES += plasmacloud_pax1800-lite
 
 define Device/pplink_s21_16m
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
   SOC := mt7621
+  IMAGE_SIZE := 16000k
   DEVICE_VENDOR := PP-LINK
-  DEVICE_MODEL := S21 (16M SPI NOR)
-  DEVICE_PACKAGES := kmod-mt76
+  DEVICE_MODEL := S21
+  DEVICE_VARIANT := 16M
+  DEVICE_DTS := mt7621_pplink_s21_16m
+  DEVICE_PACKAGES += \
+	kmod-mt7915e \
+	mt7915-firmware \
+	wpad-basic-mbedtls
+  SUPPORTED_DEVICES += s21-16M
 endef
 TARGET_DEVICES += pplink_s21_16m
 
 define Device/pplink_s21_32m
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
   SOC := mt7621
+  IMAGE_SIZE := 32384k
   DEVICE_VENDOR := PP-LINK
-  DEVICE_MODEL := S21 (32M SPI NOR)
-  DEVICE_PACKAGES := kmod-mt76
+  DEVICE_MODEL := S21
+  DEVICE_VARIANT := 32M
+  DEVICE_DTS := mt7621_pplink_s21_32m
+  DEVICE_PACKAGES += \
+	kmod-mt7915e \
+	mt7915-firmware \
+	wpad-basic-mbedtls
+  SUPPORTED_DEVICES += s21-32M
 endef
 TARGET_DEVICES += pplink_s21_32m
+
 
 define Device/raisecom_msg1500-x-00
   $(Device/nand)
