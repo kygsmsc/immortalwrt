@@ -125,7 +125,7 @@
 	};
 };
 
-&pin_ctrl {
+&pinctrl {
 	state_default: pinctrl0 {
 		gpio {
 			groups = "i2c", "uart3", "wdt";
