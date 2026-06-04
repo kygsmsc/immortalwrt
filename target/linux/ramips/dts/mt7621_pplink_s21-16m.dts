@@ -94,7 +94,7 @@
 /* MT7905DAN(2.4G) PCIE0 */
 &pcie0 {
 	wifi@0,0 {
-		compatible = "mediatek,mt7915e";
+		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		mediatek,mtd-eeprom = <&factory 0x0000>;
 	};
@@ -102,7 +102,7 @@
 /* MT7975DN(5G) PCIE1 */
 &pcie1 {
 	wifi@0,0 {
-		compatible = "mediatek,mt7915e";
+		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		mediatek,mtd-eeprom = <&factory 0x8000>;
 	};
@@ -124,7 +124,7 @@
 &pinctrl {
 	state_default: pinctrl0 {
 		gpio {
-			groups = "wdt", "rgmii2";
+			groups = "wdt";
 			function = "gpio";
 		};
 	};
