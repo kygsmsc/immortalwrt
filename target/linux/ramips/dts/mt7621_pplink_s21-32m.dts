@@ -35,12 +35,6 @@
 			compatible = "fixed-layout";
 			#address-cells = <1>;
 			#size-cells = <1>;
-
-			macaddr_bdinfo_de00: macaddr@de00 {
-				compatible = "mac-base";
-				reg = <0xde00 0x6>;
-				#nvmem-cell-cells = <1>;
-			};
 		};
 	};
 };
