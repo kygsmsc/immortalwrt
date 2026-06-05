@@ -118,7 +118,7 @@
 };
 
 &gmac0 {
-	nvmem-cells = <&macaddr_factory_3fff4>;
+	nvmem-cells = <&macaddr_factory_e000>;
 	nvmem-cell-names = "mac-address";
 };
 
@@ -127,7 +127,7 @@
 	label = "wan";
 	phy-handle = <&ethphy4>;
 
-	nvmem-cells = <&macaddr_factory_3fffa>;
+	nvmem-cells = <&macaddr_factory_e006>;
 	nvmem-cell-names = "mac-address";
 };
 
