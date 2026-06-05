@@ -100,22 +100,10 @@
 	status = "okay";
 };
 
-/* PCIE0 → 2.4G MT7915 */
-&pcie0 {
-	wifi24: wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		mediatek,mtd-eeprom = <&factory 0x0000>;
-		mediatek,disable-radar-background;
-	};
-};
-
-/* PCIE1 → 5G MT7915 */
 &pcie1 {
-	wifi5: wifi@0,0 {
+	wifi5: wifi@0,0 {     // 把 wifi: → wifi5:
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
-		mediatek,mtd-eeprom = <&factory 0x8000>;
 		mediatek,disable-radar-background;
 	};
 };
