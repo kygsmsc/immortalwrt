@@ -32,15 +32,13 @@
 		compatible = "gpio-leds";
 
 		led_status_red: status_red {
-			function = LED_FUNCTION_STATUS;
-			color = <LED_COLOR_ID_RED>;
 			gpios = <&gpio 14 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
 		};
 
 		led_status_blue: status_blue {
-			function = LED_FUNCTION_STATUS;
-			color = <LED_COLOR_ID_BLUE>;
 			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 		};
 	};
 };
@@ -96,11 +94,12 @@
 						reg = <0xe006 0x6>;
 					};
 
-					/* 你要的 WiFi MAC 偏移 */
+					/* 2.4G MAC @ 0x04 */
 					macaddr_wifi24: macaddr@04 {
 						reg = <0x04 0x6>;
 					};
 
+					/* 5G MAC @ 0x28 */
 					macaddr_wifi5g: macaddr@28 {
 						reg = <0x28 0x6>;
 					};
