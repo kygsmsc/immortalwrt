@@ -2696,29 +2696,27 @@ TARGET_DEVICES += plasmacloud_pax1800-lite
 
 define Device/pplink_s21_16m
   $(Device/dsa-migration)
-  $(Device/uimage-lzma-loader)
-  SOC := mt7621
-  IMAGE_SIZE := 16000k
+  IMAGE_SIZE := 15872k
   DEVICE_VENDOR := PP-LINK
   DEVICE_MODEL := S21
   DEVICE_VARIANT := 16M
   DEVICE_DTS := mt7621_pplink_s21-16m
-  DEVICE_PACKAGES := kmod-mt7915-firmware
-  SUPPORTED_DEVICES += s21-16M
+  UIMAGE_NAME := R30
+  DEVICE_PACKAGES := kmod-mt7915-firmware -uboot-envtools
+  SUPPORTED_DEVICES += s21-16M R30
 endef
 TARGET_DEVICES += pplink_s21_16m
 
 define Device/pplink_s21_32m
   $(Device/dsa-migration)
-  $(Device/uimage-lzma-loader)
-  SOC := mt7621
   IMAGE_SIZE := 32384k
   DEVICE_VENDOR := PP-LINK
   DEVICE_MODEL := S21
   DEVICE_VARIANT := 32M
   DEVICE_DTS := mt7621_pplink_s21-32m
-  DEVICE_PACKAGES := kmod-mt7915-firmware
-  SUPPORTED_DEVICES += s21-32M
+  UIMAGE_NAME := R30
+  DEVICE_PACKAGES := kmod-mt7915-firmware -uboot-envtools
+  SUPPORTED_DEVICES += s21-32M R30
 endef
 TARGET_DEVICES += pplink_s21_32m
 
