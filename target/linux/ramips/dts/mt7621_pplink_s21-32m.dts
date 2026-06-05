@@ -45,7 +45,14 @@
 	};
 };
 
-&wifi {
-	nvmem-cells = <&eeprom_factory_0>, <&macaddr_bdinfo_28 0>;
+/* 2.4G WiFi */
+&wifi24 {
+	nvmem-cells = <&eeprom_factory_0>, <&macaddr_wifi24>;
+	nvmem-cell-names = "eeprom", "mac-address";
+};
+
+/* 5G WiFi */
+&wifi5g {
+	nvmem-cells = <&eeprom_factory_8000>, <&macaddr_wifi5g>;
 	nvmem-cell-names = "eeprom", "mac-address";
 };
