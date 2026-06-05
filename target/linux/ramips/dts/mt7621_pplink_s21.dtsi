@@ -7,10 +7,10 @@
 
 / {
 	aliases {
-		led-boot = &led_internet_blue;
-		led-failsafe = &led_internet_red;
-		led-running = &led_internet_blue;
-		led-upgrade = &led_internet_red;
+		led-boot = &led_status_blue;
+		led-failsafe = &led_status_red;
+		led-running = &led_status_blue;
+		led-upgrade = &led_status_red;
 		label-mac-device = &gmac0;
 	};
 
@@ -26,6 +26,7 @@
 			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
 		};
+	};
 
 	leds {
 		compatible = "gpio-leds";
@@ -41,8 +42,7 @@
 			color = <LED_COLOR_ID_BLUE>;
 			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
 		};
-	}
-
+	};
 };
 
 &spi0 {
@@ -81,11 +81,11 @@
 					#size-cells = <1>;
 
 					eeprom_factory_0: eeprom@0 {
-						reg = <0x0 0x400>;
+						reg = <0x0 0x1000>;
 					};
 
 					eeprom_factory_8000: eeprom@8000 {
-						reg = <0x8000 0x200>;
+						reg = <0x8000 0x1000>;
 					};
 
 					macaddr_factory_e000: macaddr@e000 {
@@ -95,10 +95,17 @@
 					macaddr_factory_e006: macaddr@e006 {
 						reg = <0xe006 0x6>;
 					};
+
+					/* 你要的 WiFi MAC 偏移 */
+					macaddr_wifi24: macaddr@04 {
+						reg = <0x04 0x6>;
+					};
+
+					macaddr_wifi5g: macaddr@28 {
+						reg = <0x28 0x6>;
+					};
 				};
 			};
-
-			/* additional partitions in DTS */
 		};
 	};
 };
@@ -107,12 +114,18 @@
 	status = "okay";
 };
 
-&pcie1 {
-	wifi: wifi@0,0 {
+&pcie0 {
+	wifi24: wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_0>;
-		nvmem-cell-names = "eeprom";
+		mediatek,disable-radar-background;
+	};
+};
+
+&pcie1 {
+	wifi5g: wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
 		mediatek,disable-radar-background;
 	};
 };
@@ -126,7 +139,6 @@
 	status = "okay";
 	label = "wan";
 	phy-handle = <&ethphy4>;
-
 	nvmem-cells = <&macaddr_factory_e006>;
 	nvmem-cell-names = "mac-address";
 };
@@ -137,25 +149,10 @@
 
 &switch0 {
 	ports {
-		port@0 {
-			status = "okay";
-			label = "lan1";
-		};
-
-		port@1 {
-			status = "okay";
-			label = "lan2";
-		};
-
-		port@2 {
-			status = "okay";
-			label = "lan3";
-		};
-
-		port@3 {
-			status = "okay";
-			label = "lan4";
-		};
+		port@0 { status = "okay"; label = "lan1"; };
+		port@1 { status = "okay"; label = "lan2"; };
+		port@2 { status = "okay"; label = "lan3"; };
+		port@3 { status = "okay"; label = "lan4"; };
 	};
 };
 
