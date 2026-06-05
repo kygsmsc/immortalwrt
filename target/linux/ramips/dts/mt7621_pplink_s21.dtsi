@@ -101,7 +101,7 @@
 };
 
 &pcie1 {
-	wifi5: wifi@0,0 {     // 把 wifi: → wifi5:
+	wifi: wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		mediatek,disable-radar-background;
