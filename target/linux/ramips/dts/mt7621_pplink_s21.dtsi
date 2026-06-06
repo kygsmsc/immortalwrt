@@ -88,9 +88,8 @@
 					};
 
 					macaddr_factory_e000: macaddr@e000 {
-						compatible = "mac-base";
 						reg = <0xe000 0x6>;
-						#nvmem-cell-cells = <1>;
+
 					};
 					macaddr_factory_e006: macaddr@e006 {
 						reg = <0xe006 0x6>;
@@ -112,7 +111,7 @@
 
 
 &pcie1 {
-	wifi1: wifi@0,0 {
+	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>;
