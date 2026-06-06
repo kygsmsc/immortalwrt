@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-
 #include "mt7621_pplink_s21.dtsi"
 
 / {
@@ -7,46 +5,6 @@
 	model = "PP-LINK S21 (32M SPI NOR)";
 };
 
-&partitions {
-	partition@50000 {
-		compatible = "denx,uimage";
-		label = "firmware";
-		reg = <0x50000 0x1f80000>;
-	};
-
-	partition@1fd0000 {
-		label = "debug";
-		reg = <0x1fd0000 0x10000>;
-		read-only;
-	};
-
-	partition@1fe0000 {
-		label = "backup";
-		reg = <0x1fe0000 0x10000>;
-		read-only;
-	};
-
-	partition@1ff0000 {
-		label = "bdinfo";
-		reg = <0x1ff0000 0x10000>;
-		read-only;
-
-		nvmem-layout {
-			compatible = "fixed-layout";
-			#address-cells = <1>;
-			#size-cells = <1>;
-		};
-	};
-};
-
-/* 2.4G WiFi */
-&wifi24 {
-	nvmem-cells = <&eeprom_factory_0>, <&macaddr_wifi24>;
-	nvmem-cell-names = "eeprom", "mac-address";
-};
-
-/* 5G WiFi */
-&wifi5g {
-	nvmem-cells = <&eeprom_factory_8000>, <&macaddr_wifi5g>;
-	nvmem-cell-names = "eeprom", "mac-address";
+&firmware {
+	reg = <0x50000 0x1fb0000>;
 };
