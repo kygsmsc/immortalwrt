@@ -2703,7 +2703,7 @@ define Device/pplink_s21_16m
   DEVICE_VARIANT := 16M
   DEVICE_DTS := mt7621_pplink_s21-16m
   DEVICE_PACKAGES := kmod-mt7915e -uboot-envtools
-  SUPPORTED_DEVICES += s21-16M R30
+  SUPPORTED_DEVICES += pplink,s21-16m
 endef
 TARGET_DEVICES += pplink_s21_16m
 
@@ -2716,7 +2716,7 @@ define Device/pplink_s21_32m
   DEVICE_VARIANT := 32M
   DEVICE_DTS := mt7621_pplink_s21-32m
   DEVICE_PACKAGES := kmod-mt7915-firmware -uboot-envtools
-  SUPPORTED_DEVICES += s21-32M R30
+  SUPPORTED_DEVICES += pplink,s21-32m
 endef
 TARGET_DEVICES += pplink_s21_32m
 
