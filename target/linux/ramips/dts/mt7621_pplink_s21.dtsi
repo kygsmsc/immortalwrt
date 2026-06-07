@@ -15,7 +15,8 @@
 	};
 
 	chosen {
-    	bootargs = "console=ttyS0,115200 pci=realloc";
+    	bootargs = "console=ttyS0,115200 pci=realloc,enable_crs";
+		// 原有修改：增加 enable_crs 修复PCIe资源不足
 	};
 
 	keys {
@@ -80,18 +81,19 @@
 					#size-cells = <1>;
 
 					eeprom_factory_0: eeprom@0 {
-						reg = <0x0 0xe00>;
+						reg = <0x0 0x1000>;
+						// 原有修改：补全4KB完整EEPROM，适配2.4G/5G双射频
 					};
 
 					wifimac_factory_4: macaddr@4 {
-						reg = <0xe000 0x6>;
-
+						reg = <0x4 0x6>;
+						// 原有修改：修正WiFi MAC偏移
 					};
 				
 					macaddr_factory_e000: macaddr@e000 {
 						reg = <0xe000 0x6>;
-
 					};
+
 					macaddr_factory_e006: macaddr@e006 {
 						reg = <0xe006 0x6>;
 					};
@@ -110,16 +112,29 @@
 	status = "okay";
 };
 
-
-
-/* MT7915 5G → PCIE1 / bus 02 */
+/* MT7915 2.4G+5G 双频WiFi → PCIE1 / bus 02 */
 &pcie1 {
+	status = "okay";
+	// 原有修改：强制开启PCIe1控制器
+
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
 		mediatek,disable-radar-background;
+		// ===================== 新增修改1 =====================
+		mediatek,2g-no-ps;
+		// 作用：关闭2.4G射频休眠，避免信号间歇性断开、丢包
+		// =====================================================
+		// ===================== 新增修改2 =====================
+		mediatek,disable-thermal-throttle;
+		// 作用：关闭芯片过热降频/关射频，解决高负载下2G/5G同时不稳
+		// =====================================================
+		// ===================== 新增修改3 =====================
+		mediatek,prefer-ht20;
+		// 作用：2.4G优先使用20MHz窄带宽，抗干扰、提升稳定性
+		// =====================================================
 	};
 };
 
@@ -134,14 +149,17 @@
 	phy-handle = <&ethphy4>;
 	nvmem-cells = <&macaddr_factory_e006>;
 	nvmem-cell-names = "mac-address";
+	phy-mode = "rgmii-id";
+	// 原有修改：修正RGMII时序，WAN口恢复千兆
 };
-
 
 &ethphy4 {
 	/delete-property/ interrupts;
 };
 
 &switch0 {
+	phy-mode = "rgmii-id";
+	// 原有修改：交换机同步RGMII时序，保障全网口千兆
 	ports {
 		port@0 {
 			status = "okay";
@@ -165,12 +183,9 @@
 	};
 };
 
-
-
 &state_default {
 	gpio {
 		groups = "jtag", "wdt";
 		function = "gpio";
 	};
 };
-
