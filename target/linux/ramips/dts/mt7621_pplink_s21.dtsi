@@ -51,7 +51,7 @@
 	flash0: flash@0 {
 		compatible = "jedec,spi-nor";
 		reg = <0>;
-		spi-max-frequency = <50000000>;
+		spi-max-frequency = <10000000>;
 
 		partitions {
 			compatible = "fixed-partitions";
@@ -132,7 +132,7 @@
 		// 作用：关闭芯片过热降频/关射频，解决高负载下2G/5G同时不稳
 		// =====================================================
 		// ===================== 新增修改3 =====================
-		mediatek,prefer-ht20;
+		// mediatek,prefer-ht20;
 		// 作用：2.4G优先使用20MHz窄带宽，抗干扰、提升稳定性
 		// =====================================================
 	};
