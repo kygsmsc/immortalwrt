@@ -119,14 +119,21 @@
 	status = "okay";
 };
 
-// ================================================================================
-// ❌【修改 2/4】关闭 PCIe0（原来的 5G 口）
-// 原因：你的硬件 PCIe0 信号差/供电不足/干扰大 → 5G 频繁消失
-// 解决：直接禁用，不让内核识别
-// ================================================================================
+/* ======================== 【正确】PCIe0 = 5G （恢复启用） ======================== */
 &pcie0 {
-	status = "disabled";  // 👈 原来为 okay，现在改为禁用
-	
+	status = "okay";       // 必须启用，不能 disable
+
+	pcie-mt7621-fix-power; // 🔥 修复 5G 消失、掉卡、供电问题
+	pcie-mt7621-fixclk;    // 🔥 修复时钟不稳定
+
+	wifi5@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_28>;
+		nvmem-cell-names = "eeprom", "mac-address";
+		mediatek,disable-radar-background;
+		mediatek,disable-thermal-throttle;
+	};
 };
 
 // ================================================================================
@@ -157,18 +164,6 @@
 		// =====================================================
 	};
 
-	// ============================================================================
-	// ✅【修改 4/4】把 5G 芯片从 PCIe0 复制过来，放在 PCIe1
-	// 原因：让 2.4G + 5G 都走稳定的 PCIe1，彻底解决 5G 消失
-	// ============================================================================
-	wifi5@1,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0001 0 0 0 0>;  // 👈 重点：必须改为 0x0001 区分第二片芯片
-		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_28>;
-		nvmem-cell-names = "eeprom", "mac-address";
-		mediatek,disable-radar-background;
-		mediatek,disable-thermal-throttle;
-	};
 };
 
 // ==============================
