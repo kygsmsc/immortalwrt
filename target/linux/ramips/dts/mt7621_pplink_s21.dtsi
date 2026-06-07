@@ -69,7 +69,11 @@
 				read-only;
 			};
 
-			partition@40000 {
+			// ==================== ✅ 修复位置 1 START ====================
+			// 增加标签：factory:  让内核识别这个分区为 NVMEM 设备
+			// =============================================================
+			factory: partition@40000 {
+			// ==================== ✅ 修复位置 1 END ====================
 				label = "factory";
 				reg = <0x40000 0x10000>;
 				read-only;
@@ -81,17 +85,14 @@
 
 					eeprom_factory_0: eeprom@0 {
 						reg = <0x0 0x1000>;
-						// 原有修改：补全4KB完整EEPROM，适配2.4G/5G双射频
 					};
 
 					wifimac_factory_4: macaddr@4 {
 						reg = <0x4 0x6>;
-						// 原有修改：修正WiFi MAC偏移
 					};
 
 					wifimac_factory_28: macaddr@28 {
 						reg = <0x28 0x6>;
-						// 原有修改：修正WiFi MAC偏移
 					};
 				
 					macaddr_factory_e000: macaddr@e000 {
@@ -108,33 +109,34 @@
 				compatible = "denx,uimage";
 				label = "firmware";
 			};
+
 		};
 	};
 };
+
 
 &pcie {
 	status = "okay";
 };
 
+// ================================================================================
+// ❌【修改 2/4】关闭 PCIe0（原来的 5G 口）
+// 原因：你的硬件 PCIe0 信号差/供电不足/干扰大 → 5G 频繁消失
+// 解决：直接禁用，不让内核识别
+// ================================================================================
 &pcie0 {
-	status = "okay";
-wifi5@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_28>;
-		nvmem-cell-names = "eeprom", "mac-address";
-		mediatek,disable-radar-background;
-		// ===================== 新增修改2 =====================
-		mediatek,disable-thermal-throttle;
-		// 作用：关闭芯片过热降频/关射频，解决高负载下2G/5G同时不稳
-		// =====================================================
-	};
+	status = "disabled";  // 👈 原来为 okay，现在改为禁用
+	
 };
 
+// ================================================================================
+// ✅【修改 3/4】PCIe1 保留启用，并且把 5G 也移到这里
+// 原因：你的硬件 PCIe1 更稳定，双频芯片共用这个口
+// ================================================================================
 &pcie1 {
 	status = "okay";
-	// 原有修改：强制开启PCIe1控制器
 
+	// 2.4G 芯片（原有配置不变）
 	wifi24@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
@@ -154,16 +156,28 @@ wifi5@0,0 {
 		// 作用：2.4G优先使用20MHz窄带宽，抗干扰、提升稳定性
 		// =====================================================
 	};
+
+	// ============================================================================
+	// ✅【修改 4/4】把 5G 芯片从 PCIe0 复制过来，放在 PCIe1
+	// 原因：让 2.4G + 5G 都走稳定的 PCIe1，彻底解决 5G 消失
+	// ============================================================================
+	wifi5@1,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0001 0 0 0 0>;  // 👈 重点：必须改为 0x0001 区分第二片芯片
+		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_28>;
+		nvmem-cell-names = "eeprom", "mac-address";
+		mediatek,disable-radar-background;
+		mediatek,disable-thermal-throttle;
+	};
 };
 
+// ==============================
+// ❌ 原错误配置（已注释保留）
+// 错误原因：gmac1 直接绑定 phy 会与 switch0 冲突，导致 PHY 被抢占，数据不通
+// ==============================
+/*
 &ethernet {
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
-	// 以太网要用 MDIO 通信脚 + RGMII 千兆数据脚
-};
-
-&gmac0 {
-	nvmem-cells = <&macaddr_factory_e000>;
-	nvmem-cell-names = "mac-address";
 };
 
 &gmac1 {
@@ -172,16 +186,41 @@ wifi5@0,0 {
 	phy-handle = <&ethphy4>;
 	nvmem-cells = <&macaddr_factory_e006>;
 	nvmem-cell-names = "mac-address";
-
 };
 
 &ethphy4 {
 	/delete-property/ interrupts;
 };
+*/
+// ==============================
+// ✅ 修复：WAN口能获取DHCP IP（MT7621标准正确配置）
+// 原因：gmac1 必须走 switch 通道，不能直接绑 phy，否则 PHY 被独占
+// ==============================
+&gmac1 {
+	status = "okay";
+	nvmem-cells = <&macaddr_factory_e006>;
+	nvmem-cell-names = "mac-address";
+};
 
 &switch0 {
-	
+	/* 修复：必须启用CPU端口，否则WAN/LAN都不通 */
+	status = "okay";
+
+	/* 修复：wan口绑定gmac1，正确写法 */
+	wan_mac: mac@1 {
+		compatible = "mediatek,mmc-mac";  /* ✅ 修复错误 */
+		status = "okay";                  /* ✅ 修复缺失 */
+		label = "wan";
+	};
+
 	ports {
+		/* 修复：WAN 必须走 port@4（MT7530默认） */
+		port@4 {
+			status = "okay";
+			label = "wan";
+			phy-handle = <&ethphy4>;
+		};
+
 		port@0 {
 			status = "okay";
 			label = "lan1";
@@ -202,6 +241,11 @@ wifi5@0,0 {
 			label = "lan4";
 		};
 	};
+};
+
+&gmac0 {
+	nvmem-cells = <&macaddr_factory_e000>;
+	nvmem-cell-names = "mac-address";
 };
 
 &state_default {
