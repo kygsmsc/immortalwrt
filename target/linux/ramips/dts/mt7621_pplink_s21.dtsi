@@ -15,8 +15,7 @@
 	};
 
 	chosen {
-    	bootargs = "console=ttyS0,115200 pci=realloc,enable_crs";
-		// 原有修改：增加 enable_crs 修复PCIe资源不足
+		bootargs = "console=ttyS0,115200";
 	};
 
 	keys {
@@ -45,6 +44,40 @@
 
 };
 
+&spi0 {
+	status = "okay";
+
+	flash0: flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+
+			partition@40000 {
+				label = "factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+
+				nvmem-layout {
+					compatible = "fixed-layout";
+					#address-cells = <1>;
+					#size-cells = <1>;
 &spi0 {
 	status = "okay";
 
@@ -112,13 +145,16 @@
 	status = "okay";
 };
 
-/* MT7915 2.4G+5G 双频WiFi → PCIE1 / bus 02 */
+&pcie0 {
+	status = "okay";
+};
+
 &pcie1 {
 	status = "okay";
 	// 原有修改：强制开启PCIe1控制器
 
 	wifi@0,0 {
-		compatible = "mediatek,mt76";
+		compatible = "mediatek,mt7915e";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
@@ -138,6 +174,10 @@
 	};
 };
 
+&ethernet {
+	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
+};
+
 &gmac0 {
 	nvmem-cells = <&macaddr_factory_e000>;
 	nvmem-cell-names = "mac-address";
@@ -149,8 +189,7 @@
 	phy-handle = <&ethphy4>;
 	nvmem-cells = <&macaddr_factory_e006>;
 	nvmem-cell-names = "mac-address";
-	phy-mode = "rgmii-id";
-	// 原有修改：修正RGMII时序，WAN口恢复千兆
+
 };
 
 &ethphy4 {
@@ -158,8 +197,7 @@
 };
 
 &switch0 {
-	phy-mode = "rgmii-id";
-	// 原有修改：交换机同步RGMII时序，保障全网口千兆
+	
 	ports {
 		port@0 {
 			status = "okay";
