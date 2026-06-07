@@ -153,7 +153,7 @@
 	status = "okay";
 	// 原有修改：强制开启PCIe1控制器
 
-	wifi@0,0 {
+	wifi0: wifi@0,0 {
 		compatible = "mediatek,mt7915e";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
