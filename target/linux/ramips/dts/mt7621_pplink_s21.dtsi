@@ -176,6 +176,7 @@
 
 &ethernet {
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
+	// 以太网要用 MDIO 通信脚 + RGMII 千兆数据脚
 };
 
 &gmac0 {
