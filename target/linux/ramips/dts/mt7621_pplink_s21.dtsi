@@ -80,21 +80,14 @@
 					#size-cells = <1>;
 
 					eeprom_factory_0: eeprom@0 {
-						reg = <0x0 0x1000>;
+						reg = <0x0 0xe00>;
 					};
 
-					eeprom_factory_8000: eeprom@8000 {
-						reg = <0x8000 0x1000>;
-					};
-
-					wifimac24_factory_4: macaddr@4 {
+					wifimac_factory_4: macaddr@4 {
 						reg = <0xe000 0x6>;
 
 					};
-					wifimac5_factory_28: macaddr@28 {
-						reg = <0xe006 0x6>;
-					};
-
+				
 					macaddr_factory_e000: macaddr@e000 {
 						reg = <0xe000 0x6>;
 
@@ -118,23 +111,13 @@
 };
 
 
-/* MT7916 2.4G → PCIE0 / bus 01 */
-&pcie0 {
-	wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_0>, <&wifimac24_factory_4>;
-		nvmem-cell-names = "eeprom", "mac-address";
-		mediatek,disable-radar-background;
-	};
-};
 
 /* MT7915 5G → PCIE1 / bus 02 */
 &pcie1 {
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_8000>, <&wifimac5_factory_28>;
+		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
 		mediatek,disable-radar-background;
 	};
