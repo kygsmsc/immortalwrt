@@ -83,7 +83,6 @@
 				label = "factory";
 				reg = <0x40000 0x10000>;
 				read-only;
-			};
 
 				nvmem-layout {
 					compatible = "fixed-layout";
@@ -192,12 +191,9 @@
 			fixed-link {
 				speed = <1000>;
 				full-duplex;
-			};
 		};
 	};
 };
-
-
 
 &state_default {
 	gpio {
