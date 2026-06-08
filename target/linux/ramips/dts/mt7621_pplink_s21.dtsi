@@ -44,14 +44,6 @@
 
 };
 
-&i2c {
-	status = "disabled";
-};
-
-&sdhci {
-	status = "disabled";
-};
-
 &spi0 {
 	status = "okay";
 
