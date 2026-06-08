@@ -43,7 +43,13 @@
 	};
 
 };
+&i2c {
+	status = "disabled";
+};
 
+&sdhci {
+	status = "disabled";
+};
 &spi0 {
 	status = "okay";
 
@@ -61,13 +67,7 @@
 
 			partition@0 {
 				label = "u-boot";
-				reg = <0x0 0x30000>;
-				read-only;
-			};
-
-			partition@30000 {
-				label = "u-boot-env";
-				reg = <0x30000 0x10000>;
+				reg = <0x00000000 0x00040000>;
 				read-only;
 			};
 
@@ -103,7 +103,10 @@
 				compatible = "denx,uimage";
 				label = "firmware";
 			};
-
+			partition@1ff0000 {
+				label = "user";
+				reg = <0x01ff0000 0x00010000>;
+			};
 		};
 	};
 };
@@ -118,14 +121,15 @@
 &pcie1 {
 	status = "okay";       // 必须启用，不能 disable
 
-	wifi@0,0 {
+	wifi0: wifi@0,0 {
 		compatible = "mediatek,mt7915e";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
+	/*	
 		mediatek,disable-radar-background;
 		mediatek,disable-thermal-throttle;
-
+	*/
 	};
 
 };
@@ -146,10 +150,11 @@
 	nvmem-cells = <&macaddr_factory_e006>;
 	nvmem-cell-names = "mac-address";
 };
-*/
+
 &ethphy4 {
 	/delete-property/ interrupts;
 };
+*/
 &switch0 {
 
 
@@ -184,7 +189,7 @@
 			nvmem-cells = <&macaddr_factory_e006>;
 			nvmem-cell-names = "mac-address";
 		};
-
+/*
 		port@6 {
 			reg = <6>;
 			label = "cpu";
@@ -195,6 +200,7 @@
 				full-duplex;
 			};
 		};
+*/
 	};
 };
 &state_default {
