@@ -32,7 +32,7 @@
 	leds {
 		compatible = "gpio-leds";
 
-		led_status: status {
+		led_internet_red: status {
 			function = LED_FUNCTION_STATUS;
 			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&gpio 24 GPIO_ACTIVE_LOW>;
