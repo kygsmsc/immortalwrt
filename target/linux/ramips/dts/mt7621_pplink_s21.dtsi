@@ -51,14 +51,7 @@
 	};
 
 
-};
-&i2c {
-	status = "disabled";
-};
 
-&sdhci {
-	status = "disabled";
-};
 &spi0 {
 	status = "okay";
 
@@ -91,7 +84,7 @@
 					#size-cells = <1>;
 
 					eeprom_factory_0: eeprom@0 {
-						reg = <0x0 0x1000>;
+						reg = <0x0 0xe00>;
 					};
 
 					wifimac_factory_4: macaddr@4 {
@@ -111,11 +104,7 @@
 			firmware: partition@50000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-			};
-			partition@1ff0000 {
-				label = "user";
-				reg = <0x01ff0000 0x00010000>;
-			};
+			
 		};
 	};
 };
