@@ -28,18 +28,65 @@
 		};
 	};
 
-	leds {
-		compatible = "gpio-leds";
+leds {
+	compatible = "gpio-leds";
 
-		led_internet_blue: internet_blue {
-			label = "blue:internet";
-			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
-		};
+	// 1. 电源灯（常亮）
+	power {
+		function = LED_FUNCTION_POWER;
+		color = <LED_COLOR_ID_GREEN>;   // 颜色：绿
+		gpios = <&gpio  24  GPIO_ACTIVE_LOW>;
+		default-state = "on";           // 开机就亮
+	};
 
-		led_internet_red: internet_red {
-			label = "red:internet";
-			gpios = <&gpio 24 GPIO_ACTIVE_LOW>;
+	// 2. 系统灯（启动/运行/故障）
+	sys {
+		function = LED_FUNCTION_STATUS;
+		color = <LED_COLOR_ID_GREEN>;
+		gpios = <&gpio  5  GPIO_ACTIVE_LOW>;
+	};
+
+	// 3. 互联网灯（WAN 联网成功亮）
+	internet {
+		function = LED_FUNCTION_WAN;
+		color = <LED_COLOR_ID_BLUE>;
+		gpios = <&gpio  6  GPIO_ACTIVE_LOW>;
+	};
+
+	// 4. WAN 口已插入网线（link/activity）
+	wan_link {
+		function = LED_FUNCTION_WAN;
+		color = <LED_COLOR_ID_YELLOW>;
+		gpios = <&gpio  7  GPIO_ACTIVE_LOW>;
+		linux,default-trigger = "netdev";
+		triggers = {
+			trigger-mode = "link,rx,tx";
+			device = "wan";
 		};
+	};
+
+	// 5. LAN 口已插入网线
+	lan_link {
+		function = LED_FUNCTION_LAN;
+		color = <LED_COLOR_ID_GREEN>;
+		gpios = <&gpio  8  GPIO_ACTIVE_LOW>;
+		linux,default-trigger = "netdev";
+		triggers = {
+			trigger-mode = "link,rx,tx";
+			device = "lan";
+		};
+	};
+
+	// 6. WiFi 无线灯
+	wifi {
+		function = LED_FUNCTION_WLAN;
+		color = <LED_COLOR_ID_BLUE>;
+		gpios = <&gpio  9  GPIO_ACTIVE_LOW>;
+		linux,default-trigger = "phy0tpt"; // 2.4G
+		// linux,default-trigger = "phy1tpt"; // 5G
+	};
+};
+
 	};
 
 };
