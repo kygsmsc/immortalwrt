@@ -28,70 +28,13 @@
 		};
 	};
 
-aliases {
-	led-boot = &led_system;
-	led-failsafe = &led_system;
-	led-running = &led_system;
-	led-upgrade = &led_system;
-	label-mac-device = &gmac0;
-};
-
-chosen {
-	bootargs = "console=ttyS0,115200";
-};
-
-keys {
-	compatible = "gpio-keys";
-
-	reset {
-		label = "reset";
-		gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
-		linux,code = <KEY_RESTART>;
-	};
-};
 
 	leds {
 		compatible = "gpio-leds";
 
-		// led-0 = 电源灯
-		led_power: led-0 {
-			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_POWER;
-			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
-		};
-
-		// led-1 = 系统灯
-		led_system: led-1 {
-			color = <LED_COLOR_ID_BLUE>;
+		led_status: status {
 			function = LED_FUNCTION_STATUS;
-			gpios = <&gpio 7 GPIO_ACTIVE_LOW>;
-		};
-
-		// led-2 = 互联网
-		led_internet: led-2 {
 			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_INTERNET;
-			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
-		};
-
-		// led-3 = WiFi
-		led_wifi: led-3 {
-			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_WLAN;
-			gpios = <&gpio 9 GPIO_ACTIVE_LOW>;
-		};
-
-		// led-5 = WAN 口
-		led_wan: led-5 {
-			color = <LED_COLOR_ID_BLUE>;
-			function = LED_FUNCTION_WAN;
-			gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
-		};
-
-		// led-6 = LAN 口
-		led_lan: led-6 {
-			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_LAN;
 			gpios = <&gpio 24 GPIO_ACTIVE_LOW>;
 		};
 	};
