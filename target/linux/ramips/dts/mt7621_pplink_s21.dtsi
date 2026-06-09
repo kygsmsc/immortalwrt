@@ -50,7 +50,15 @@
 		};
 	};
 
+};
 
+&i2c {
+	status = "disabled";
+};
+
+&sdhci {
+	status = "disabled";
+};
 
 &spi0 {
 	status = "okay";
@@ -93,10 +101,12 @@
 				
 					macaddr_factory_e000: macaddr@e000 {
 						reg = <0xe000 0x6>;
+						#nvmem-cell-cells = <1>;
 					};
 
 					macaddr_factory_e006: macaddr@e006 {
 						reg = <0xe006 0x6>;
+						#nvmem-cell-cells = <1>;
 					};
 				};
 			};
@@ -104,7 +114,7 @@
 			firmware: partition@50000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-			
+			};
 		};
 	};
 };
@@ -124,10 +134,6 @@
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
-	/*	
-		mediatek,disable-radar-background;
-		mediatek,disable-thermal-throttle;
-	*/
 	};
 
 };
@@ -140,19 +146,7 @@
 	nvmem-cells = <&macaddr_factory_e000>;
 	nvmem-cell-names = "mac-address";
 };
-/*
-&gmac1 {
-	status = "okay";
-	label = "wan";
-	phy-handle = <&ethphy4>;
-	nvmem-cells = <&macaddr_factory_e006>;
-	nvmem-cell-names = "mac-address";
-};
 
-&ethphy4 {
-	/delete-property/ interrupts;
-};
-*/
 &switch0 {
 	ports {
 
@@ -182,18 +176,7 @@
 			nvmem-cells = <&macaddr_factory_e006>;
 			nvmem-cell-names = "mac-address";
 		};
-/*
-		port@6 {
-			reg = <6>;
-			label = "cpu";
 
-			phy-mode = "rgmii";
-			fixed-link {
-				speed = <1000>;
-				full-duplex;
-			};
-		};
-*/
 	};
 };
 &state_default {
