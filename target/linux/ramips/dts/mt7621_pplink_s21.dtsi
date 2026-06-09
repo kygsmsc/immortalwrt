@@ -131,7 +131,7 @@
 	status = "okay";       // 必须启用，不能 disable
 
 	wifi0: wifi@0,0 {
-		compatible = "mediatek,mt7915e";
+		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
