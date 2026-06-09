@@ -29,63 +29,42 @@
 	};
 
 leds {
-	compatible = "gpio-leds";
+		compatible = "gpio-leds";
 
-	// 1. 电源灯（常亮）
-	power {
-		function = LED_FUNCTION_POWER;
-		color = <LED_COLOR_ID_GREEN>;   // 颜色：绿
-		gpios = <&gpio  24  GPIO_ACTIVE_LOW>;
-		default-state = "on";           // 开机就亮
-	};
-
-	// 2. 系统灯（启动/运行/故障）
-	sys {
-		function = LED_FUNCTION_STATUS;
-		color = <LED_COLOR_ID_GREEN>;
-		gpios = <&gpio  5  GPIO_ACTIVE_LOW>;
-	};
-
-	// 3. 互联网灯（WAN 联网成功亮）
-	internet {
-		function = LED_FUNCTION_WAN;
-		color = <LED_COLOR_ID_BLUE>;
-		gpios = <&gpio  6  GPIO_ACTIVE_LOW>;
-	};
-
-	// 4. WAN 口已插入网线（link/activity）
-	wan_link {
-		function = LED_FUNCTION_WAN;
-		color = <LED_COLOR_ID_YELLOW>;
-		gpios = <&gpio  7  GPIO_ACTIVE_LOW>;
-		linux,default-trigger = "netdev";
-		triggers = {
-			trigger-mode = "link,rx,tx";
-			device = "wan";
+		led_status_red: led-0 {
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
 		};
-	};
 
-	// 5. LAN 口已插入网线
-	lan_link {
-		function = LED_FUNCTION_LAN;
-		color = <LED_COLOR_ID_GREEN>;
-		gpios = <&gpio  8  GPIO_ACTIVE_LOW>;
-		linux,default-trigger = "netdev";
-		triggers = {
-			trigger-mode = "link,rx,tx";
-			device = "lan";
+		led_status_blue: led-1 {
+			color = <LED_COLOR_ID_BLUE>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&gpio 7 GPIO_ACTIVE_LOW>;
 		};
-	};
 
-	// 6. WiFi 无线灯
-	wifi {
-		function = LED_FUNCTION_WLAN;
-		color = <LED_COLOR_ID_BLUE>;
-		gpios = <&gpio  9  GPIO_ACTIVE_LOW>;
-		linux,default-trigger = "phy0tpt"; // 2.4G
-		// linux,default-trigger = "phy1tpt"; // 5G
-	};
-};
+		led_status_green: led-2 {
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
+		};
+		led_status_red: led-3 {
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&gpio 9 GPIO_ACTIVE_LOW>;
+		};
+
+		led_status_blue: led-4 {
+			color = <LED_COLOR_ID_BLUE>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
+		};
+
+		led_status_green: led-5 {
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
+			gpios = <&gpio 24 GPIO_ACTIVE_LOW>;
+		};
 
 	};
 
@@ -169,7 +148,7 @@ leds {
 	status = "okay";       // 必须启用，不能 disable
 
 	wifi0: wifi@0,0 {
-		compatible = "mediatek,mt7915e";
+		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
 		nvmem-cell-names = "eeprom", "mac-address";
@@ -203,31 +182,26 @@ leds {
 };
 */
 &switch0 {
-
-
-
 	ports {
-
-		
 
 		port@0 {
 			status = "okay";
-			label = "lan1";
+			label = "lan4";
 		};
 
 		port@1 {
 			status = "okay";
-			label = "lan2";
+			label = "lan3";
 		};
 
 		port@2 {
 			status = "okay";
-			label = "lan3";
+			label = "lan2";
 		};
 
 		port@3 {
 			status = "okay";
-			label = "lan4";
+			label = "lan1";
 		};
 
 		port@4 {
