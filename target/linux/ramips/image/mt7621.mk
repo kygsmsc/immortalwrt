@@ -2705,8 +2705,10 @@ define Device/pplink_s21_16m
   DEVICE_PACKAGES += \
 	$(DEFAULT_PACKAGES) \
 	kmod-mt7915e \
-	mt7915-firmware \
-	wpad-basic-mbedtls
+	kmod-mt7915-firmware \
+	wpad-openssl \
+	luci-app-wireless \
+	-uboot-envtools
   SUPPORTED_DEVICES += pplink,s21-16m
 endef
 TARGET_DEVICES += pplink_s21_16m
@@ -2722,8 +2724,10 @@ define Device/pplink_s21_32m
   DEVICE_PACKAGES += \
 	$(DEFAULT_PACKAGES) \
 	kmod-mt7915e \
-	mt7915-firmware \
-	wpad-basic-mbedtls
+	kmod-mt7915-firmware \
+	wpad-openssl \
+	luci-app-wireless \
+	-uboot-envtools
   SUPPORTED_DEVICES += pplink,s21-32m
 endef
 TARGET_DEVICES += pplink_s21_32m
