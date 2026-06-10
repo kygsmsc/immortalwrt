@@ -92,6 +92,9 @@
 						// 原有修改：补全4KB完整EEPROM，适配2.4G/5G双射频
 					};
 
+					eeprom_factory_800: eeprom@800 {
+						reg = <0x800 0xe00>;
+					};
 					wifimac_factory_4: macaddr@4 {
 						reg = <0x4 0x6>;
 						// 原有修改：修正WiFi MAC偏移
@@ -118,11 +121,11 @@
 &pcie {
 	status = "okay";
 };
-/*
+
 &pcie0 {
 	status = "okay";
 };
-
+/*
 &pcie1 {
 	status = "okay";
 	// 原有修改：强制开启PCIe1控制器
