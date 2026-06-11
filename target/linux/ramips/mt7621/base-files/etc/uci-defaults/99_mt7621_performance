@@ -4,6 +4,10 @@ cat > target/linux/ramips/mt7621/base-files/etc/uci-defaults/99_mt7621_performan
 
 # 启用 irqbalance 服务
 /etc/init.d/irqbalance-mt7621 enable
+# Reduce NAND flash wear
+if grep -q "nand" /proc/mtd; then
+    mount -o remount,noatime,nodiratime /
+fi
 
 # 设置内核参数
 cat << EOT >> /etc/sysctl.d/99-mt7621.conf
