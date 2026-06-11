@@ -1,0 +1,19 @@
+cat > target/linux/ramips/mt7621/base-files/etc/uci-defaults/99_mt7621_performance << 'EOF'
+#!/bin/sh
+# ImmortalWrt MT7621 首次启动性能优化
+
+# 启用 irqbalance 服务
+/etc/init.d/irqbalance-mt7621 enable
+
+# 设置内核参数
+cat << EOT >> /etc/sysctl.d/99-mt7621.conf
+# MT7621 Performance Tweaks
+net.core.rmem_max=4194304
+net.core.wmem_max=4194304
+net.ipv4.tcp_congestion_control=cubic
+net.ipv4.tcp_fastopen=3
+vm.swappiness=10
+EOT
+
+exit 0
+EOF
