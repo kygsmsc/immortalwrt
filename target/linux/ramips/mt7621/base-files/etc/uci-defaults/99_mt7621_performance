@@ -8,6 +8,9 @@ cat > target/linux/ramips/mt7621/base-files/etc/uci-defaults/99_mt7621_performan
 if grep -q "nand" /proc/mtd; then
     mount -o remount,noatime,nodiratime /
 fi
+# Reduce NAND flash wear
+# Increase vm.min_free_kbytes for high memory
+echo "vm.min_free_kbytes=16384" >> /etc/sysctl.d/99-mt7621.conf
 
 # 设置内核参数
 cat << EOT >> /etc/sysctl.d/99-mt7621.conf
