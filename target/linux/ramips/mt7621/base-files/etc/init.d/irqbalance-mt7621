@@ -1,39 +1,30 @@
+mkdir -p target/linux/ramips/mt7621/base-files/etc/init.d
+
+cat > target/linux/ramips/mt7621/base-files/etc/init.d/irqbalance-mt7621 << 'EOF'
 #!/bin/sh /etc/rc.common
 # ImmortalWrt MT7621 Performance Tuning
 START=99
 STOP=10
 
 start() {
-    # 1. 仅针对 MT7621 平台
     grep -q "mt7621" /proc/cpuinfo || return 0
     
-    echo "Applying MT7621 optimizations for ImmortalWrt..."
+    echo "Applying MT7621 optimizations..."
     
-    # 2. DSA 架构下的接口识别
-    # MT7621 通常有 eth0 (主接口), lan1-lan4, wan
-    local RPS_MASK="f"  # 4核全开
+    local RPS_MASK="f"
     
-    # 3. 遍历所有物理接口（排除虚拟接口）
     for iface in /sys/class/net/*; do
         dev=$(basename "$iface")
-        
-        # 跳过虚拟接口
         case "$dev" in
             lo|docker*|br-*|veth*|wg*|ppp*|@*) continue ;;
         esac
         
-        # 设置 RPS/XPS
         [ -f "$iface/queues/rx-0/rps_cpus" ] && echo $RPS_MASK > "$iface/queues/rx-0/rps_cpus"
         [ -f "$iface/queues/tx-0/xps_cpus" ] && echo $RPS_MASK > "$iface/queues/tx-0/xps_cpus"
     done
     
-    # 4. ImmortalWrt 特有：优化 bridge 性能
-    if [ -d "/sys/class/net/br-lan" ]; then
-        echo $RPS_MASK > /sys/class/net/br-lan/queues/rx-0/rps_cpus
-    fi
+    [ -d "/sys/class/net/br-lan" ] && echo $RPS_MASK > /sys/class/net/br-lan/queues/rx-0/rps_cpus
 }
 
-stop() {
-    # 清理操作（可选）
-    :
-}
+stop() { :; }
+EOF
