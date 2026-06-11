@@ -1,4 +1,19 @@
 # Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
+# === MT7621 Performance Tuning ===
+# Set RPS for eth0 to use all 4 CPU threads (f = binary 1111)
+if [ -d "/sys/class/net/eth0" ]; then
+    echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
+fi
 
+# Set RPS for DSA interfaces
+for iface in /sys/class/net/*; do
+    case $(basename $iface) in
+        lan*|wan|eth*)
+            if [ -d "$iface/queues" ]; then
+                echo f > $iface/queues/rx-0/rps_cpus
+            fi
+            ;;
+    esac
+done
 exit 0
