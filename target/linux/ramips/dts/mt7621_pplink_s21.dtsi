@@ -149,8 +149,12 @@
 		mediatek,disable-radar-background;
 	};
 };
+// ★修改原因：原ethernet仅配置pinctrl，缺失RGMII时序与模式参数，导致千兆协商失败，锁死10M速率
 &ethernet {
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
+	phy-mode = "rgmii";
+	tx-delay = <4>;
+	rx-delay = <2>;
 };
 
 &gmac0 {
@@ -160,8 +164,14 @@
 
 
 &switch0 {
-	
+	// ★修改原因：原代码缺失MT7530交换机必需的CPU端口port@5，无CPU转发通道，DHCP无法获取IP、复位后全网失效
 	ports {
+		// CPU口，必须放在最前，mt7621交换机固定port5连接GMAC
+		port@5 {
+			status = "okay";
+			label = "cpu";
+			phy-mode = "rgmii";
+		};
 
 		port@0 {
 			status = "okay";
@@ -189,11 +199,23 @@
 			nvmem-cell-names = "mac-address";
 		};
 	};
+
+	// ★修改原因：新增VLAN分区，固化LAN/WAN划分，恢复出厂不会丢失网络转发规则
+	vlan {
+		vlan@1 {
+			ports = <0 1 2 3 5t>;
+			label = "lan";
+		};
+		vlan@2 {
+			ports = <4 5t>;
+			label = "wan";
+		};
+	};
 };
 
 &state_default {
+	// ★修改原因：原配置启用jtag复用GPIO，占用RGMII交换机引脚，硬件引脚冲突导致网口异常；注释jtag只保留wdt释放引脚资源
 	gpio {
-		groups = "jtag", "wdt";
+		groups = "wdt";
 		function = "gpio";
 	};
-};
