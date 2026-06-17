@@ -149,8 +149,13 @@
 		mediatek,disable-radar-background;
 	};
 };
+
 &ethernet {
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
+	// 新增RGMII千兆必需参数
+	phy-mode = "rgmii";
+	tx-delay = <4>;
+	rx-delay = <2>;
 };
 
 &gmac0 {
@@ -162,6 +167,12 @@
 &switch0 {
 	
 	ports {
+
+		port@5 {
+			status = "okay";
+			label = "cpu";
+			phy-mode = "rgmii";
+		};
 
 		port@0 {
 			status = "okay";
@@ -188,12 +199,23 @@
 			nvmem-cells = <&macaddr_factory_e006>;
 			nvmem-cell-names = "mac-address";
 		};
+
+	};
+	vlan {
+		vlan@1 {
+			ports = <0 1 2 3 5t>;
+			label = "lan";
+		};
+		vlan@2 {
+			ports = <4 5t>;
+			label = "wan";
+		};
 	};
 };
 
 &state_default {
 	gpio {
-		groups = "jtag", "wdt";
+		groups = "wdt";
 		function = "gpio";
 	};
 };
