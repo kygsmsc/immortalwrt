@@ -5,7 +5,6 @@
 #include <dt-bindings/leds/common.h>
 
 / {
-
 	aliases {
 		led-boot = &led_internet_blue;
 		led-failsafe = &led_internet_red;
@@ -41,7 +40,6 @@
 			gpios = <&gpio 24 GPIO_ACTIVE_LOW>;
 		};
 	};
-
 };
 
 &i2c {
@@ -82,31 +80,34 @@
 				reg = <0x40000 0x10000>;
 				read-only;
 
-				nvmem-layout {
-					compatible = "fixed-layout";
-					#address-cells = <1>;
-					#size-cells = <1>;
+				/*
+				 * ❌ 原实现使用了 nvmem-layout + fixed-layout
+				 * 当前 OpenWrt DTC 尚不支持该语法，
+				 * 会导致第 206 行 syntax error。
+				 *
+				 * ✅ 改为传统 nvmem-cells 写法（稳定、兼容）。
+				 */
 
-					eeprom_factory_0: eeprom@0 {
-						reg = <0x0 0xe00>;
-						// 原有修改：补全4KB完整EEPROM，适配2.4G/5G双射频
-					};
+				eeprom_factory_0: eeprom@0 {
+					reg = <0x0 0xe00>;
+					/* 原有修改：补全 4KB EEPROM，适配 2.4G/5G */
+				};
 
-					eeprom_factory_800: eeprom@800 {
-						reg = <0x800 0xe00>;
-					};
-					wifimac_factory_4: macaddr@4 {
-						reg = <0x4 0x6>;
-						// 原有修改：修正WiFi MAC偏移
-					};
-				
-					macaddr_factory_e000: macaddr@e000 {
-						reg = <0xe000 0x6>;
-					};
+				eeprom_factory_800: eeprom@800 {
+					reg = <0x800 0xe00>;
+				};
 
-					macaddr_factory_e006: macaddr@e006 {
-						reg = <0xe006 0x6>;
-					};
+				wifimac_factory_4: macaddr@4 {
+					reg = <0x4 0x6>;
+					/* 原有修改：修正 WiFi MAC 偏移 */
+				};
+
+				macaddr_factory_e000: macaddr@e000 {
+					reg = <0xe000 0x6>;
+				};
+
+				macaddr_factory_e006: macaddr@e006 {
+					reg = <0xe006 0x6>;
 				};
 			};
 
@@ -125,21 +126,11 @@
 &pcie0 {
 	status = "okay";
 };
-/*
-&pcie1 {
-	status = "okay";
-	// 原有修改：强制开启PCIe1控制器
 
-	wifi0: wifi@0,0 {
-		compatible = "mediatek,mt7915e";
-		reg = <0x0000 0 0 0 0>;
-		nvmem-cells = <&eeprom_factory_0>, <&wifimac_factory_4>;
-		nvmem-cell-names = "eeprom", "mac-address";
-		mediatek,disable-radar-background;
-		
-	};
-};
-*/
+/*
+ * 原 PCIe1 使用 mt7915e + nvmem-cells，
+ * 现统一为 mt76 驱动（更稳定，兼容性更好）
+ */
 &pcie1 {
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
@@ -152,7 +143,6 @@
 
 &ethernet {
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
-	// 新增RGMII千兆必需参数
 	phy-mode = "rgmii";
 	tx-delay = <4>;
 	rx-delay = <2>;
@@ -163,11 +153,8 @@
 	nvmem-cell-names = "mac-address";
 };
 
-
 &switch0 {
-	
 	ports {
-
 		port@5 {
 			status = "okay";
 			label = "cpu";
@@ -193,19 +180,21 @@
 			status = "okay";
 			label = "lan4";
 		};
+
 		port@4 {
 			status = "okay";
 			label = "wan";
 			nvmem-cells = <&macaddr_factory_e006>;
 			nvmem-cell-names = "mac-address";
 		};
-
 	};
+
 	vlan {
 		vlan@1 {
 			ports = <0 1 2 3 5t>;
 			label = "lan";
 		};
+
 		vlan@2 {
 			ports = <4 5t>;
 			label = "wan";
