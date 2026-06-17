@@ -81,11 +81,11 @@
 				read-only;
 
 				/*
-				 * ❌ 原实现使用了 nvmem-layout + fixed-layout
-				 * 当前 OpenWrt DTC 尚不支持该语法，
-				 * 会导致第 206 行 syntax error。
+				 * ❌ 原代码使用了 nvmem-layout + fixed-layout
+				 * ImmortalWrt 24.10（kernel 6.6）DTC 不支持该语法，
+				 * 会导致 dtc syntax error。
 				 *
-				 * ✅ 改为传统 nvmem-cells 写法（稳定、兼容）。
+				 * ✅ 改为传统 nvmem-cells 写法（稳定、可提交）。
 				 */
 
 				eeprom_factory_0: eeprom@0 {
@@ -128,8 +128,7 @@
 };
 
 /*
- * 原 PCIe1 使用 mt7915e + nvmem-cells，
- * 现统一为 mt76 驱动（更稳定，兼容性更好）
+ * 统一使用 mt76 驱动（更稳定，兼容性更好）
  */
 &pcie1 {
 	wifi@0,0 {
@@ -142,10 +141,9 @@
 };
 
 &ethernet {
+	status = "okay";
+	pinctrl-names = "default";
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
-	phy-mode = "rgmii";
-	tx-delay = <4>;
-	rx-delay = <2>;
 };
 
 &gmac0 {
@@ -155,12 +153,6 @@
 
 &switch0 {
 	ports {
-		port@5 {
-			status = "okay";
-			label = "cpu";
-			phy-mode = "rgmii";
-		};
-
 		port@0 {
 			status = "okay";
 			label = "lan1";
@@ -187,24 +179,19 @@
 			nvmem-cells = <&macaddr_factory_e006>;
 			nvmem-cell-names = "mac-address";
 		};
-	};
 
-	vlan {
-		vlan@1 {
-			ports = <0 1 2 3 5t>;
-			label = "lan";
-		};
-
-		vlan@2 {
-			ports = <4 5t>;
-			label = "wan";
+		port@6 {
+			status = "okay";
+			label = "cpu";
+			ethernet = <&gmac0>;
+			phy-mode = "rgmii";
 		};
 	};
 };
 
 &state_default {
 	gpio {
-		groups = "wdt";
+		groups = "jtag", "wdt";
 		function = "gpio";
 	};
 };
