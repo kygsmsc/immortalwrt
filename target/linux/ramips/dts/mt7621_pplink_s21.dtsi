@@ -149,11 +149,7 @@
 		mediatek,disable-radar-background;
 	};
 };
-
-/* ★ LAN 千兆关键：status + pinctrl 让 MT7530 MDIO 扫描内置 PHY ★ */
 &ethernet {
-	status = "okay";
-	pinctrl-names = "default";
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
 };
 
@@ -191,12 +187,6 @@
 			label = "wan";
 			nvmem-cells = <&macaddr_factory_e006>;
 			nvmem-cell-names = "mac-address";
-		};
-		port@6 {
-			status = "okay";
-			label = "cpu";
-			ethernet = <&gmac0>;
-			phy-mode = "rgmii";
 		};
 	};
 };
