@@ -80,34 +80,26 @@
 				reg = <0x40000 0x10000>;
 				read-only;
 
-				/*
-				 * ❌ 原代码使用了 nvmem-layout + fixed-layout
-				 * ImmortalWrt 24.10（kernel 6.6）DTC 不支持该语法，
-				 * 会导致 dtc syntax error。
-				 *
-				 * ✅ 改为传统 nvmem-cells 写法（稳定、可提交）。
-				 */
+				nvmem-layout {
+					compatible = "fixed-layout";
+					#address-cells = <1>;
+					#size-cells = <1>;
 
-				eeprom_factory_0: eeprom@0 {
-					reg = <0x0 0xe00>;
-					/* 原有修改：补全 4KB EEPROM，适配 2.4G/5G */
-				};
+					eeprom_factory_0: eeprom@0 {
+						reg = <0x0 0xe00>;
+					};
 
-				eeprom_factory_800: eeprom@800 {
-					reg = <0x800 0xe00>;
-				};
+					eeprom_factory_800: eeprom@800 {
+						reg = <0x800 0xe00>;
+					};
 
-				wifimac_factory_4: macaddr@4 {
-					reg = <0x4 0x6>;
-					/* 原有修改：修正 WiFi MAC 偏移 */
-				};
+					macaddr_factory_e000: macaddr@e000 {
+						reg = <0xe000 0x6>;
+					};
 
-				macaddr_factory_e000: macaddr@e000 {
-					reg = <0xe000 0x6>;
-				};
-
-				macaddr_factory_e006: macaddr@e006 {
-					reg = <0xe006 0x6>;
+					macaddr_factory_e006: macaddr@e006 {
+						reg = <0xe006 0x6>;
+					};
 				};
 			};
 
@@ -127,10 +119,9 @@
 	status = "okay";
 };
 
-/*
- * 统一使用 mt76 驱动（更稳定，兼容性更好）
- */
 &pcie1 {
+	status = "okay";
+
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
@@ -138,6 +129,13 @@
 		nvmem-cell-names = "eeprom";
 		mediatek,disable-radar-background;
 	};
+};
+
+/*
+ * ✅ 必须保留，否则 Kernel 6.6 下 PCIe 总线可能异常
+ */
+&pcie2 {
+	status = "okay";
 };
 
 &ethernet {
