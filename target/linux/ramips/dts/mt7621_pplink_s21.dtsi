@@ -139,8 +139,6 @@
 };
 
 &ethernet {
-	status = "okay";
-	pinctrl-names = "default";
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
 };
 
