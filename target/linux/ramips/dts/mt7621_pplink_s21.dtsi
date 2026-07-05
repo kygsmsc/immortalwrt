@@ -149,6 +149,11 @@
 		mediatek,disable-radar-background;
 	};
 };
+
+&pcie2 {
+	status = "okay";
+};
+
 &ethernet {
 	pinctrl-0 = <&mdio_pins>, <&rgmii1_pins>;
 };
